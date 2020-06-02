@@ -78,7 +78,8 @@ Now you can toggle it by pressing `F2` instead of `Esc`:
 ## Issues
   if you found any issues please open an issue.
   
-  ## Screenshots
-[Collapsible sidebar for laravel nova](screenshots/screenshot.gif)
+## Screenshots
+
+![Collapsible sidebar for laravel nova](screenshots/screenshot.gif)
   
 [link-author]: https://github.com/osamaAbdullah
