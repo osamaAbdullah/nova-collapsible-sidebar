@@ -12,6 +12,7 @@
 <style lang="scss">
   .sidebar {
     position: relative;
+    transition: 0.3s;
 
     &.collapsed {
       > *:not(.trigger) {
