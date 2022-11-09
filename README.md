@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-composer require osamaAbdullah/nova-collapsible-sidebar
+composer require osama/nova-collapsible-sidebar
 ```
 
 In order to extend the default sidebar you need to export the layout of nova. 
