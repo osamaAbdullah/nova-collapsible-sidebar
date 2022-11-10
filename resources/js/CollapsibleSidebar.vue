@@ -1,6 +1,5 @@
 <template>
-  <div class="sidebar"
-       :class="{collapsed}"
+  <div class="sidebar collapsed"
        :style="sidebarStyle"
        @keyup.esc="toggleCollapsed"
        @mouseover="expandOnHover"
@@ -14,94 +13,90 @@
     position: relative;
     transition: 0.3s;
 
-    &.collapsed {
-      > *:not(.trigger) {
-        display: none;
-      }
+  &.collapsed {
+    .trigger + a{
+      display: block;
+    }
 
-      .trigger + a {
-        display: block;
-      }
-
-      + .content {
-        max-width: inherit;
-      }
+    + .content {
+      max-width: inherit;
     }
   }
+}
 </style>
 
 <script>
 
-  export default {
+export default {
 
-    props: {
-      height: {
-        default: '60px',
-      },
-      width: {
-        default: '60px',
-      },
-      persist: {
-        type: Boolean,
-      },
-      storageKey: {
-        type: String,
-        default: 'nova-navigation-collapsed',
-      },
-      toggleKeyCode: {
-        type: String,
-        default: 'Escape',
-      },
+  props: {
+    height: {
+      default: '60px',
     },
+    width: {
+      default: '60px',
+    },
+    persist: {
+      type: Boolean,
+    },
+    storageKey: {
+      type: String,
+      default: 'nova-navigation-collapsed',
+    },
+    toggleKeyCode: {
+      type: String,
+      default: 'Escape',
+    },
+  },
 
-    mounted() {
+  beforeMount() {
 
-      if (!this.persist) {
-        localStorage.removeItem(this.storageKey)
-      } else {
-        this.collapsed = localStorage.getItem(this.storageKey) == 1;
+    if (!this.persist) {
+      localStorage.removeItem(this.storageKey)
+    } else {
+      this.collapsed = localStorage.getItem(this.storageKey) == 1;
+    }
+
+    window.addEventListener('keyup', event => {
+      if (event.code === this.toggleKeyCode) {
+        this.toggleCollapsed();
       }
-
-      window.addEventListener('keyup', event => {
-        if (event.code === this.toggleKeyCode) {
-          this.toggleCollapsed();
-        }
-      });
-    },
-    data: () => {
+    });
+  },
+  data: () => {
+    return {
+      marginLeft: -210,
+      collapsed: false,
+      expandedByHover: false,
+    };
+  },
+  computed: {
+    sidebarStyle() {
       return {
-        marginLeft: -210,
-        collapsed: false,
-        expandedByHover: false,
+        marginLeft: (this.collapsed ? this.marginLeft : 0) + 'px',
       };
     },
-    computed: {
-      sidebarStyle() {
-        return {
-          marginLeft: (this.collapsed ? this.marginLeft : 0) + 'px',
-        };
-      },
-    },
-    methods: {
-      toggleCollapsed() {
-        this.collapsed = !this.collapsed;
+  },
+  methods: {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
 
-        if (this.persist) {
-          localStorage.setItem(this.storageKey, this.collapsed ? 1 : 0);
-        }
-      },
-        expandOnHover() {
-          if (this.collapsed) {
-              this.collapsed = false;
-              this.expandedByHover = true;
-          }
-      },
-        collapseOnLeave() {
-          if (this.expandedByHover) {
-              this.collapsed = true;
-              this.expandedByHover = false;
-          }
-      },
+      if (this.persist) {
+        localStorage.setItem(this.storageKey, this.collapsed ? 1 : 0);
+      }
     },
-  };
+    expandOnHover() {
+      if (this.collapsed) {
+        this.collapsed = false;
+        this.expandedByHover = true;
+      }
+    },
+    collapseOnLeave() {
+      if (this.expandedByHover) {
+        this.collapsed = true;
+        this.expandedByHover = false;
+      }
+    },
+  },
+};
 </script>
