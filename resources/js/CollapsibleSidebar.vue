@@ -1,60 +1,75 @@
 <template>
-  <div class="sidebar collapsed"
-       :style="sidebarStyle"
-       @keyup.esc="toggleCollapsed"
-       @mouseover="expandOnHover"
-       @mouseleave="collapseOnLeave">
-    <slot/>
+  <div class="sidebar"
+       :class="type"
+       ref="sidebar"
+       @keyup.esc="toggleCollapsed">
+    <div class="sidebar-content">
+      <slot/>
+    </div>
   </div>
 </template>
-
 <style lang="scss">
-  .sidebar {
-    position: relative;
-    transition: 0.3s;
-
-  &.collapsed {
-    .trigger + a{
-      display: block;
-    }
-
-    + .content {
-      max-width: inherit;
-    }
+.sidebar-expanded {
+  & + .content {
+    max-width: calc(100% - 13.75rem);
+    margin-left: 13.75rem;
   }
 }
+
+.sidebar-collapsed {
+  &.collapsed {
+    width: 1rem;
+  }
+
+  & + .content {
+    max-width: 100%;
+  }
+}
+
+.sidebar-content {
+  padding: 5.7rem 1.5rem 0 1.5rem;
+  width: 10.75rem;
+
+  ul li a {
+    white-space: nowrap;
+  }
+}
+
+.sidebar {
+  width: 13.75rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  z-index: 90;
+  min-height: 100vh;
+  max-height: 100vh;
+  transition: width .3s;
+}
 </style>
-
 <script>
-
 export default {
-
   props: {
-    height: {
-      default: '60px',
-    },
-    width: {
-      default: '60px',
-    },
     persist: {
       type: Boolean,
     },
     storageKey: {
-      type: String,
-      default: 'nova-navigation-collapsed',
+      type: String, default: 'nova-navigation-collapsed',
     },
     toggleKeyCode: {
-      type: String,
-      default: 'Escape',
+      type: String, default: 'Escape',
     },
   },
-
   beforeMount() {
 
     if (!this.persist) {
       localStorage.removeItem(this.storageKey)
     } else {
-      this.collapsed = localStorage.getItem(this.storageKey) == 1;
+      if (localStorage.getItem(this.storageKey) === 'sidebar-collapsed collapsed') {
+        this.type = 'sidebar-collapsed collapsed';
+      } else {
+        this.type = 'sidebar-expanded';
+      }
     }
 
     window.addEventListener('keyup', event => {
@@ -63,38 +78,44 @@ export default {
       }
     });
   },
+  mounted() {
+    this.type === 'sidebar-collapsed collapsed' && this.collapse();
+  },
   data: () => {
     return {
-      marginLeft: -210,
-      collapsed: false,
-      expandedByHover: false,
+      type: 'sidebar-expanded',
     };
   },
-  computed: {
-    sidebarStyle() {
-      return {
-        marginLeft: (this.collapsed ? this.marginLeft : 0) + 'px',
-      };
-    },
-  },
   methods: {
-    toggleCollapsed() {
-      this.collapsed = !this.collapsed;
-
+    collapse() {
+      this.type = 'sidebar-collapsed collapsed';
+      this.$refs['sidebar'].onmouseover = this.expandOnHover;
+      this.$refs['sidebar'].onmouseleave = this.collapseOnLeave;
       if (this.persist) {
-        localStorage.setItem(this.storageKey, this.collapsed ? 1 : 0);
+        localStorage.setItem(this.storageKey, 'sidebar-collapsed collapsed');
       }
     },
+    expand() {
+      this.type = 'sidebar-expanded';
+      this.$refs['sidebar'].onmouseover = null;
+      this.$refs['sidebar'].mouseleave = null;
+      if (this.persist) {
+        localStorage.setItem(this.storageKey, 'sidebar-expanded');
+      }
+    },
+    toggleCollapsed() {
+      this.type === 'sidebar-expanded' ?
+          this.collapse() :
+          this.expand();
+    },
     expandOnHover() {
-      if (this.collapsed) {
-        this.collapsed = false;
-        this.expandedByHover = true;
+      if (this.$refs['sidebar'].classList.contains('collapsed')) {
+        this.$refs['sidebar'].classList.remove('collapsed')
       }
     },
     collapseOnLeave() {
-      if (this.expandedByHover) {
-        this.collapsed = true;
-        this.expandedByHover = false;
+      if (!this.$refs['sidebar'].classList.contains('collapsed')) {
+        this.$refs['sidebar'].classList.add("collapsed")
       }
     },
   },
