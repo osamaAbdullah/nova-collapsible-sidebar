@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar"
-       :class="type"
+       :class="sidebarClass"
        ref="sidebar"
        @keyup.esc="toggleCollapsed">
     <div class="sidebar-content">
@@ -66,9 +66,9 @@ export default {
       localStorage.removeItem(this.storageKey)
     } else {
       if (localStorage.getItem(this.storageKey) === 'sidebar-collapsed collapsed') {
-        this.type = 'sidebar-collapsed collapsed';
+        this.sidebarClass = 'sidebar-collapsed collapsed';
       } else {
-        this.type = 'sidebar-expanded';
+        this.sidebarClass = 'sidebar-expanded';
       }
     }
 
@@ -79,16 +79,16 @@ export default {
     });
   },
   mounted() {
-    this.type === 'sidebar-collapsed collapsed' && this.collapse();
+    this.sidebarClass === 'sidebar-collapsed collapsed' && this.collapse();
   },
   data: () => {
     return {
-      type: 'sidebar-expanded',
+      sidebarClass: 'sidebar-expanded',
     };
   },
   methods: {
     collapse() {
-      this.type = 'sidebar-collapsed collapsed';
+      this.sidebarClass = 'sidebar-collapsed collapsed';
       this.$refs['sidebar'].onmouseover = this.expandOnHover;
       this.$refs['sidebar'].onmouseleave = this.collapseOnLeave;
       if (this.persist) {
@@ -96,7 +96,7 @@ export default {
       }
     },
     expand() {
-      this.type = 'sidebar-expanded';
+      this.sidebarClass = 'sidebar-expanded';
       this.$refs['sidebar'].onmouseover = null;
       this.$refs['sidebar'].mouseleave = null;
       if (this.persist) {
@@ -104,7 +104,7 @@ export default {
       }
     },
     toggleCollapsed() {
-      this.type === 'sidebar-expanded' ?
+      this.sidebarClass === 'sidebar-expanded' ?
           this.collapse() :
           this.expand();
     },
