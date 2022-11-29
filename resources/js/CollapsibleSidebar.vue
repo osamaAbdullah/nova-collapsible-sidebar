@@ -19,6 +19,7 @@
 .sidebar-collapsed {
   &.collapsed {
     width: 1rem;
+    overflow-y: hidden;
   }
 
   & + .content {
@@ -46,6 +47,30 @@
   min-height: 100vh;
   max-height: 100vh;
   transition: width .3s;
+
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #9c9c9c;
+    border-radius: 100vh;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #7d7c7c;
+  }
+
+  @supports (scrollbar-color: #9c9c9c transparent) {
+    * {
+      scrollbar-color: #9c9c9c transparent;
+      scrollbar-width: thin;
+    }
+  }
 }
 </style>
 <script>
