@@ -49,7 +49,7 @@
   transition: width .3s;
 
   &::-webkit-scrollbar {
-    width: 0.6rem;
+    width: 0.5rem;
   }
 
   &::-webkit-scrollbar-track {
